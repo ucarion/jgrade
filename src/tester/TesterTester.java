@@ -1,7 +1,5 @@
 package tester;
 
-import java.util.regex.Pattern;
-
 public class TesterTester {
 	public static void main(String[] args) throws Exception {
 		String rule = "<S:>.*for.*<I:>3<O:>XXX<I:>5<O:>XXXXX<I:>7<O:>XXXXXXX";

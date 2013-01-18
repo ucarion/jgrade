@@ -1,20 +1,11 @@
 package compiler;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
-import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
-import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
@@ -26,10 +17,6 @@ import javax.tools.ToolProvider;
  */
 public class Compiler {
 	private static final String BASEPATH = "turnins/";
-	
-	public static void main(String[] args) {
-		Compiler.compile("Y:\\javaprograms\\morestuff\\", "Fail");
-	}
 	
 	/**
 	 * Compiles a program.

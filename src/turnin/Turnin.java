@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import runner.Runner;
 import tester.Tester;
 import compiler.Compiler;
+import config.Config;
 
 /**
  * A wrapper and util class for dealing with turnins. Handles all database
@@ -26,10 +27,9 @@ import compiler.Compiler;
  * 
  */
 public class Turnin {
-	private static final String DATABASE =
-			"jdbc:mysql://grader.computologycentral.com:3306/grading";
-	private static final String USERNAME = "Grader";
-	private static final String PASSWORD = "password";
+	private static final String DATABASE = Config.getFullDatabaseName();
+	private static final String USERNAME = Config.getUsername();
+	private static final String PASSWORD = Config.getPassword();
 	
 	private static Connection con;
 	

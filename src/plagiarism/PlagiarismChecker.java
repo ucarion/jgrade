@@ -11,16 +11,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
-import java.util.Arrays;
 
 import plagiarism.PlagiarismUtil.PlagiarismStat;
+import config.Config;
 
 public class PlagiarismChecker {
-	private static final String DATABASE =
-			"jdbc:mysql://computologycentral.com:3306/grading";
-	private static final String USERNAME = "Grader";
-	private static final String PASSWORD = "password";
+	private static final String DATABASE = Config.getFullDatabaseName();
+	private static final String USERNAME = Config.getUsername();
+	private static final String PASSWORD = Config.getPassword();
 	
 	private static Connection con;
 	

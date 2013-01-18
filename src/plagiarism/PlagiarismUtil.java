@@ -1,20 +1,6 @@
 package plagiarism;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class PlagiarismUtil {	
+public class PlagiarismUtil {
 	/**
 	 * Finds and outputs the plagiarism of each string passed; these strings
 	 * would represent classes in the programs. Specifically, this program
