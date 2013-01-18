@@ -1,8 +1,15 @@
-bin/
 *.class
-.*
+*.log
 
 # Package Files #
 *.jar
 *.war
 *.ear
+
+# Chess stuff / opening database #
+*.pgn
+*.txt
+
+# Eclipse-generated files #
+
+.*
