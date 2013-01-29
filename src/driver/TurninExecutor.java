@@ -1,12 +1,10 @@
 package driver;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import config.Config;
+import dbconnection.DatabaseConnection;
 import turnin.Turnin;
 
 /**
@@ -16,16 +14,6 @@ import turnin.Turnin;
  * 
  */
 public class TurninExecutor extends Thread {
-	private static final String DATABASE = Config.getFullDatabaseName();
-	private static final String USERNAME = Config.getUsername();
-	private static final String PASSWORD = Config.getPassword();
-	
-	private static Connection con;
-	
-	static {
-		con = getDBConnection();
-	}
-	
 	private int turnin_id;
 	
 	/**
@@ -65,7 +53,7 @@ public class TurninExecutor extends Thread {
 					"assignment.assignmentid = turnins.assignmentid AND " +
 					"turnins.turninid = (1)";
 			PreparedStatement ps =
-					con.prepareStatement(sql);
+					DatabaseConnection.getConnection().prepareStatement(sql);
 			ps.setInt(1, turnin_id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
@@ -75,15 +63,5 @@ public class TurninExecutor extends Thread {
 			e.printStackTrace();
 		}
 		return "";
-	}
-	
-	private static Connection getDBConnection() {
-		System.out.println("Created a new connection!");
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection(DATABASE, USERNAME, PASSWORD);
-		} catch (Exception e) {
-			return null;
-		}
 	}
 }

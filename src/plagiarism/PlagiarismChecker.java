@@ -5,27 +5,15 @@ import java.io.FileInputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 
 import plagiarism.PlagiarismUtil.PlagiarismStat;
-import config.Config;
+import dbconnection.DatabaseConnection;
 
 public class PlagiarismChecker {
-	private static final String DATABASE = Config.getFullDatabaseName();
-	private static final String USERNAME = Config.getUsername();
-	private static final String PASSWORD = Config.getPassword();
-	
-	private static Connection con;
-	
-	static {
-		con = getDBConnection();
-	}
-	
 	public static void main(String[] args) {
 		evalPlagiarism(Integer.parseInt(args[0]));
 	}
@@ -34,8 +22,9 @@ public class PlagiarismChecker {
 		PreparedStatement ps;
 		try {
 			ps =
-					con.prepareStatement("SELECT turninid, path, main_class, status FROM turnins WHERE turnins.assignmentid = "
-							+ assignmentid);
+					DatabaseConnection.getConnection().prepareStatement(
+							"SELECT turninid, path, main_class, status FROM turnins WHERE turnins.assignmentid = "
+									+ assignmentid);
 			ResultSet rs = ps.executeQuery();
 			
 			String[] strs = new String[getSize(rs)];
@@ -73,8 +62,9 @@ public class PlagiarismChecker {
 	private static void updatePlagiarism(int id, String s) {
 		try {
 			PreparedStatement ps =
-					con.prepareStatement("UPDATE turnins SET plagiarism = '" + s
-							+ "' WHERE turninid = " + id);
+					DatabaseConnection.getConnection().prepareStatement(
+							"UPDATE turnins SET plagiarism = '" + s
+									+ "' WHERE turninid = " + id);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -84,16 +74,6 @@ public class PlagiarismChecker {
 	private static String asPercent(double d) {
 		DecimalFormat df = new DecimalFormat("##.###");
 		return df.format(d * 100);
-	}
-	
-	private static Connection getDBConnection() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection(DATABASE, USERNAME, PASSWORD);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 	
 	private static String readFile(String path) {

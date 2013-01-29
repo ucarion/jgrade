@@ -1,14 +1,12 @@
 package turnin;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import runner.Runner;
 import tester.Tester;
 import compiler.Compiler;
-import config.Config;
+import dbconnection.DatabaseConnection;
 
 /**
  * A wrapper and util class for dealing with turnins. Handles all database
@@ -27,16 +25,6 @@ import config.Config;
  * 
  */
 public class Turnin {
-	private static final String DATABASE = Config.getFullDatabaseName();
-	private static final String USERNAME = Config.getUsername();
-	private static final String PASSWORD = Config.getPassword();
-	
-	private static Connection con;
-	
-	static {
-		con = getDBConnection();
-	}
-	
 	private int id;
 	private String path;
 	
@@ -111,22 +99,13 @@ public class Turnin {
 		dbSet(id, "status", noRunErrors ? "ran" : "error");
 	}
 	
-	private static Connection getDBConnection() {
-		System.out.println("Created a new connection!");
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection(DATABASE, USERNAME, PASSWORD);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
 	private static void dbSet(int id, String column, String value) {
 		System.out.println("Updating turnin#" + id + "'s " + column + " to \"" + value
 				+ "\"");
 		try {
 			String sql = "UPDATE turnins SET " + column + " = ? WHERE turninid = " + id;
-			PreparedStatement ps = con.prepareStatement(sql);
+			PreparedStatement ps =
+					DatabaseConnection.getConnection().prepareStatement(sql);
 			ps.setString(1, value);
 			ps.executeUpdate();
 		} catch (Exception e) {}
@@ -136,7 +115,8 @@ public class Turnin {
 		try {
 			String sql = "SELECT " + column + " FROM turnins WHERE turninid = " + id;
 			System.out.println("Query is: " + sql);
-			PreparedStatement ps = con.prepareStatement(sql);
+			PreparedStatement ps =
+					DatabaseConnection.getConnection().prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			return rs.getString(1);
@@ -152,7 +132,8 @@ public class Turnin {
 					"SELECT assignments.rules " + "FROM turnins, assignments "
 							+ "WHERE turninid = " + id + " "
 							+ "AND turnins.assignmentid = assignments.assignmentid";
-			PreparedStatement ps = con.prepareStatement(sql);
+			PreparedStatement ps =
+					DatabaseConnection.getConnection().prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			return rs.getString(1);
