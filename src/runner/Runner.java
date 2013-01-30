@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
  * @version Description: run files and shows output
  */
 public class Runner {
-	private static final String BASEPATH = "turnins/";
+	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
 	
 	/**
 	 * Runs the passed program. For this program to work correctly, the program

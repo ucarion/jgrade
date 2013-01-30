@@ -49,12 +49,12 @@ public class TurninExecutor extends Thread {
 	
 	private String getCompilableInfo() {
 		try {
-			String sql = "SELECT assignments.compilable FROM assignments, turnins WHERE " +
-					"assignment.assignmentid = turnins.assignmentid AND " +
-					"turnins.turninid = (1)";
+			String sql =
+					"SELECT `compilable` FROM `turnins` , `assignments` "
+							+ "WHERE turnins.turninid = " + turnin_id + " "
+							+ "AND turnins.assignmentid = assignments.assignmentid";
 			PreparedStatement ps =
 					DatabaseConnection.getConnection().prepareStatement(sql);
-			ps.setInt(1, turnin_id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			System.out.println("FOUND THAT COMPILABLE IS: " + rs.getString(1));

@@ -24,6 +24,7 @@ public class DatabaseConnection {
 			Class.forName("com.mysql.jdbc.Driver");
 			return DriverManager.getConnection(DATABASE, USERNAME, PASSWORD);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

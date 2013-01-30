@@ -16,7 +16,11 @@ import javax.tools.ToolProvider;
  * @author Ulysse & Sarah
  */
 public class Compiler {
-	private static final String BASEPATH = "turnins/";
+	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
+	
+	static {
+		System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.7.0_11");
+	}
 	
 	/**
 	 * Compiles a program.
@@ -54,7 +58,7 @@ public class Compiler {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			output = e.getMessage();
+			output = "There was an error";
 		}
 		return output;
 	}

@@ -49,8 +49,7 @@ public class Turnin {
 	public boolean compile() {
 		String main = dbGet(id, "main_class");
 		String compileResults = Compiler.compile(path, main);
-		// System.out.println("Turnin#" + id + " compile result: " +
-		// compileResults);
+		System.out.println("Turnin#" + id + " compile result: " + compileResults);
 		if ( !compileResults.isEmpty()) {
 			dbSet(id, "output", compileResults);
 			dbSet(id, "status", "error");
