@@ -9,11 +9,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 import plagiarism.PlagiarismUtil.PlagiarismStat;
 import dbconnection.DatabaseConnection;
 
 public class PlagiarismChecker {
+	private static final String PATH_TO_TURNINS =
+			"C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
+	
 	public static void main(String[] args) {
 		evalPlagiarism(Integer.parseInt(args[0]));
 	}
@@ -33,12 +37,17 @@ public class PlagiarismChecker {
 				if ( !rs.getString(4).equals("ran"))
 					continue;
 				
+//				System.out.println(PATH_TO_TURNINS + rs.getString(2) + File.separator
+//						+ rs.getString(3) + ".java");
 				strs[count] =
-						readFile("turnins/" + rs.getString(2) + "/" + rs.getString(3)
-								+ ".java");
+						readFile(PATH_TO_TURNINS + rs.getString(2) + File.separator
+								+ rs.getString(3) + ".java");
+//				System.out.println(strs[count]);
 				count++;
 			}
 			rs.beforeFirst();
+			
+			strs = Arrays.copyOf(strs, count);
 			
 			count = 0;
 			while (rs.next()) {

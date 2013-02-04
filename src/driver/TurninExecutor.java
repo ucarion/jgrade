@@ -3,9 +3,10 @@ package driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
-import dbconnection.DatabaseConnection;
 import turnin.Turnin;
+import dbconnection.DatabaseConnection;
 
 /**
  * A class that compiles/runs/tests waiting programs.
@@ -13,7 +14,7 @@ import turnin.Turnin;
  * @author Ulysse Carion
  * 
  */
-public class TurninExecutor extends Thread {
+public class TurninExecutor implements Callable<String> {
 	private int turnin_id;
 	
 	/**
@@ -29,22 +30,25 @@ public class TurninExecutor extends Thread {
 	
 	/**
 	 * Compiles, runs, and executes this TurninExecutor's turnin.
+	 * @return 
 	 */
 	@Override
-	public void run() {
+	public String call() {
 		Turnin t = new Turnin(turnin_id);
 		String s = getCompilableInfo();
 		
 		if (s.equals("nothing"))
-			return;
+			return "";
 		
 		if (t.compile()) {
 			if (s.equals("compile"))
-				return;
+				return "";
 			
 			t.testSource();
 			t.run();
 		}
+		
+		return "";
 	}
 	
 	private String getCompilableInfo() {

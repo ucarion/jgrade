@@ -27,6 +27,11 @@ public class PlagiarismUtil {
 			if (i == index)
 				continue;
 			
+			if (strings[i] == null)
+				System.out.println("String #" + i + " is null !!!");
+			else
+				System.out.println(strings[i]);
+			
 			double plagiarism = getPlagiarismIndex(strings[i], strings[index]);
 			
 			if (plagiarism > ps.getMax())
