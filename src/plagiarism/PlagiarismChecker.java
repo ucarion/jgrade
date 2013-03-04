@@ -34,9 +34,6 @@ public class PlagiarismChecker {
 			String[] strs = new String[getSize(rs)];
 			int count = 0;
 			while (rs.next()) {
-				if ( !rs.getString(4).equals("ran"))
-					continue;
-				
 //				System.out.println(PATH_TO_TURNINS + rs.getString(2) + File.separator
 //						+ rs.getString(3) + ".java");
 				strs[count] =
@@ -51,8 +48,6 @@ public class PlagiarismChecker {
 			
 			count = 0;
 			while (rs.next()) {
-				if ( !rs.getString(4).equals("ran"))
-					continue;
 				evalPlagiarism(rs.getInt(1), strs, count);
 				count++;
 			}
@@ -63,13 +58,14 @@ public class PlagiarismChecker {
 	
 	private static void evalPlagiarism(int id, String[] strs, int index) {
 		PlagiarismStat ps = PlagiarismUtil.findPlagiarism(index, strs);
-		updatePlagiarism(id, asPercent(ps.getMax()) + "% plagiarised");
+		updatePlagiarism(id, asPercent(ps.getMax()) + "%");
 		System.out.println("TURNIN #" + id + ":\nMATCHED W/ " + ps.getString() + "\n"
 				+ asPercent(ps.getMax()) + "% PLAGIARISED.");
 	}
 	
 	private static void updatePlagiarism(int id, String s) {
 		try {
+			System.out.println("Setting " + id + "'s plagia to " + s);
 			PreparedStatement ps =
 					DatabaseConnection.getConnection().prepareStatement(
 							"UPDATE turnins SET plagiarism = '" + s

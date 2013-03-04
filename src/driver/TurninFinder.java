@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,11 +37,12 @@ public class TurninFinder {
 			while (rs.next()) {
 				System.out.println("Found a new turnin! It's id is " + rs.getString(1));
 				ExecutorService executor = Executors.newSingleThreadExecutor();
-				Future<String> future = executor.submit(new TurninExecutor(rs.getInt(1)));
+				Future<String> future =
+						executor.submit(new TurninExecutorCallable(rs.getInt(1)));
 				
 				try {
 					System.out.println("Started..");
-					System.out.println(future.get(5, TimeUnit.SECONDS));
+					System.out.println(future.get(10, TimeUnit.SECONDS));
 					System.out.println("Finished!");
 				} catch (TimeoutException e) {
 					System.out.println("QUITTING");
@@ -80,6 +82,20 @@ public class TurninFinder {
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private static class TurninExecutorCallable implements Callable<String> {
+		private int turnin_id;
+		
+		public TurninExecutorCallable(int id) {
+			turnin_id = id;
+		}
+		
+		@Override
+		public String call() throws Exception {
+			new TurninExecutor(turnin_id).start();
+			return null;
 		}
 	}
 }
