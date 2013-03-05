@@ -85,7 +85,7 @@ public class Turnin {
 		String main = dbGet(id, "main_class");
 		boolean noRunErrors = true;
 		for (String input : inputs) {
-			String runResult = Runner.run(path, input, main);
+			String runResult = (new Runner()).run(path, input, main);
 			output += "<Input \"" + input + "\" yields output:>\n" + runResult + "\n";
 			boolean testworked = Tester.testOutput(input, runResult, rule);
 			noRunErrors = noRunErrors && testworked;

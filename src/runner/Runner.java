@@ -3,6 +3,10 @@ package runner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import dbconnection.DatabaseConnection;
 
 /**
  * The is the class that runs the file with command line and tells the user what
@@ -16,7 +20,7 @@ import java.io.InputStreamReader;
  */
 public class Runner {
 	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
-	
+	boolean timedOut;
 	/**
 	 * Runs the passed program. For this program to work correctly, the program
 	 * must already be compiled.
@@ -29,7 +33,10 @@ public class Runner {
 	 *            the name of the main class to execute.
 	 * @return the output of the program
 	 */
-	public static String run(String path, String input, String main) {
+	public String run(String path, String input, String main) {
+		
+		timedOut = false;
+		
 		Runtime r = Runtime.getRuntime();
 		String output = "";
 		System.out.println("Runner called.");
@@ -37,6 +44,7 @@ public class Runner {
 			String cmd = "java -cp " + BASEPATH + path + " " + main + " " + input;
 			Process p = r.exec(cmd);
 			System.out.println("RUNNER IS EXECUTING " + cmd);
+			(new Timeout(10, p)).start();
 			BufferedReader br =
 					new BufferedReader(new InputStreamReader(p.getInputStream()));
 			
@@ -46,10 +54,56 @@ public class Runner {
 				output += nextLine + "\n";
 				nextLine = br.readLine();
 			}
+			
+			System.out.println("Runner finished");
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			output = e.getMessage();
 		}
 		return output;
+	}
+	
+	private class Timeout extends Thread{
+		
+		int seconds;
+		Process p;
+		
+		public Timeout(int secs, Process p){
+			seconds = secs;
+			this.p = p;
+		}
+		
+		@Override
+		public void run(){
+			try {
+				Thread.sleep(seconds * 1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					p.exitValue();
+				} catch(IllegalThreadStateException ex) {
+					timedOut = true;
+				} finally {
+					p.destroy();
+				}
+			}
+		}
+		
+	}
+	
+	private static void updateDBTimeout(int turninid) {
+		String sql =
+				"UPDATE `turnins` SET output='Error: Timeout', status='error' WHERE turninid="
+						+ turninid;
+		System.out.println(sql);
+		PreparedStatement ps;
+		try {
+			ps = DatabaseConnection.getConnection().prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
