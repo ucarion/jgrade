@@ -20,7 +20,7 @@ import dbconnection.DatabaseConnection;
  */
 public class Runner {
 	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
-	
+	boolean timedOut;
 	/**
 	 * Runs the passed program. For this program to work correctly, the program
 	 * must already be compiled.
@@ -32,10 +32,11 @@ public class Runner {
 	 * @param main
 	 *            the name of the main class to execute.
 	 * @return the output of the program
+	 * @throws TimedOutException 
 	 */
-	public String run(String path, String input, String main) {
+	public String run(String path, String input, String main) throws TimedOutException {
 		
-		boolean timedOut = false;
+		timedOut = false;
 		
 		Runtime r = Runtime.getRuntime();
 		String output = "";
@@ -56,8 +57,7 @@ public class Runner {
 			}
 			
 			if(timedOut)
-				updateDBTimeout(id);
-			//Will probably delete this file, move to turnin.
+				throw new TimedOutException();
 			
 			System.out.println("Runner finished");
 			
@@ -95,19 +95,5 @@ public class Runner {
 			}
 		}
 		
-	}
-	
-	private static void updateDBTimeout(int turninid) {
-		String sql =
-				"UPDATE `turnins` SET output='Error: Timeout', status='error' WHERE turninid="
-						+ turninid;
-		System.out.println(sql);
-		PreparedStatement ps;
-		try {
-			ps = DatabaseConnection.getConnection().prepareStatement(sql);
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 }

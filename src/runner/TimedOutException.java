@@ -1,6 +1,6 @@
 package runner;
 
-public class TimedOutException extends RuntimeException {
+public class TimedOutException extends Exception {
 
 	private static final long serialVersionUID = -9063827913624282095L;
 	
