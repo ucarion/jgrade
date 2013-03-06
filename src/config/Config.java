@@ -72,4 +72,9 @@ public class Config {
 	public static String getFullDatabaseName() {
 		return "jdbc:mysql://" + getHost() + ":" + getPort() + "/" + getDatabase();
 	}
+
+	public static int getTimeout() {
+		// TODO Auto-generated method stub
+		return 10;
+	}
 }

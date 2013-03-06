@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import config.Config;
+
 import dbconnection.DatabaseConnection;
 
 /**
@@ -49,7 +51,7 @@ public class Runner {
 			String cmd = "java -cp " + BASEPATH + path + " " + main;
 			Process p = r.exec(cmd, args);
 			System.out.println("RUNNER IS EXECUTING " + cmd);
-			(new Timeout(10, p)).start();
+			(new Timeout(Config.getTimeout(), p)).start();
 			BufferedReader br =
 					new BufferedReader(new InputStreamReader(p.getInputStream()));
 			
