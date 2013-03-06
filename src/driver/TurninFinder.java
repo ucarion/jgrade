@@ -36,20 +36,8 @@ public class TurninFinder {
 			
 			while (rs.next()) {
 				System.out.println("Found a new turnin! It's id is " + rs.getString(1));
-				ExecutorService executor = Executors.newSingleThreadExecutor();
-				Future<String> future =
-						executor.submit(new TurninExecutorCallable(rs.getInt(1)));
-				
-				try {
-					System.out.println("Started..");
-					System.out.println(future.get(10, TimeUnit.SECONDS));
-					System.out.println("Finished!");
-				} catch (TimeoutException e) {
-					System.out.println("QUITTING");
-					updateDBTimeout(rs.getInt(1));
-				}
-				
-				executor.shutdownNow();
+				System.out.println("Started turnin id #" + rs.getInt(1));
+				new TurninExecutor(rs.getInt(1)).start();
 				
 				System.out.println("--------");
 			}
@@ -68,34 +56,6 @@ public class TurninFinder {
 			} catch (Exception ex) {// Catch exception if any
 				System.err.println("Error: " + e.getMessage());
 			}
-		}
-	}
-	
-	private static void updateDBTimeout(int turninid) {
-		String sql =
-				"UPDATE `turnins` SET output='Error: Timeout', status='error' WHERE turninid="
-						+ turninid;
-		System.out.println(sql);
-		PreparedStatement ps;
-		try {
-			ps = DatabaseConnection.getConnection().prepareStatement(sql);
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private static class TurninExecutorCallable implements Callable<String> {
-		private int turnin_id;
-		
-		public TurninExecutorCallable(int id) {
-			turnin_id = id;
-		}
-		
-		@Override
-		public String call() throws Exception {
-			new TurninExecutor(turnin_id).start();
-			return null;
 		}
 	}
 }

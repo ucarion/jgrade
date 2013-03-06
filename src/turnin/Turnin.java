@@ -2,8 +2,10 @@ package turnin;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import runner.Runner;
+import runner.TimedOutException;
 import tester.Tester;
 import compiler.Compiler;
 import dbconnection.DatabaseConnection;
@@ -85,12 +87,22 @@ public class Turnin {
 		String main = dbGet(id, "main_class");
 		boolean noRunErrors = true;
 		for (String input : inputs) {
-			String runResult = Runner.run(path, input, main);
-			output += "<Input \"" + input + "\" yields output:>\n" + runResult + "\n";
-			boolean testworked = Tester.testOutput(input, runResult, rule);
-			noRunErrors = noRunErrors && testworked;
-			String testResult = testworked ? "passed" : "failed";
-			testResults += "<Test for input \"" + input + "\":> " + testResult + "\n";
+			String runResult;
+			try {
+				runResult = (new Runner()).run(path, input, main);
+				
+				output += "<Input \"" + input + "\" yields output:>\n" + runResult + "\n";
+				boolean testworked = Tester.testOutput(input, runResult, rule);
+				noRunErrors = noRunErrors && testworked;
+				String testResult = testworked ? "passed" : "failed";
+				testResults += "<Test for input \"" + input + "\":> " + testResult + "\n";
+				
+			} catch (TimedOutException e) {
+				updateDBTimeout(id);
+				System.out.println("Timed Out!");
+				return;
+			}
+			
 		}
 		
 		dbSet(id, "output", output);
@@ -139,6 +151,20 @@ public class Turnin {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Intruder alert";
+		}
+	}
+	
+	private static void updateDBTimeout(int turninid) {
+		String sql =
+				"UPDATE `turnins` SET output='Error: Timeout', status='error' WHERE turninid="
+						+ turninid;
+		System.out.println(sql);
+		PreparedStatement ps;
+		try {
+			ps = DatabaseConnection.getConnection().prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 }
