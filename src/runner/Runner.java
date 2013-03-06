@@ -38,7 +38,8 @@ public class Runner {
 		
 		timedOut = false;
 		
-		String[] s = new String[10];
+		String[] args = new String[10];
+		args[0] = input;
 		
 		
 		Runtime r = Runtime.getRuntime();
@@ -46,7 +47,7 @@ public class Runner {
 		System.out.println("Runner called.");
 		try {
 			String cmd = "java -cp " + BASEPATH + path + " " + main;
-			Process p = r.exec(cmd);
+			Process p = r.exec(cmd, args);
 			System.out.println("RUNNER IS EXECUTING " + cmd);
 			(new Timeout(10, p)).start();
 			BufferedReader br =

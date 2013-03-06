@@ -99,7 +99,8 @@ public class Turnin {
 				
 			} catch (TimedOutException e) {
 				updateDBTimeout(id);
-				break;
+				System.out.println("Timed Out!");
+				return;
 			}
 			
 		}
