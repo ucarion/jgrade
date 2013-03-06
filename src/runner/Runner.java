@@ -38,11 +38,14 @@ public class Runner {
 		
 		timedOut = false;
 		
+		String[] s = new String[10];
+		
+		
 		Runtime r = Runtime.getRuntime();
 		String output = "";
 		System.out.println("Runner called.");
 		try {
-			String cmd = "java -cp " + BASEPATH + path + " " + main + " " + input;
+			String cmd = "java -cp " + BASEPATH + path + " " + main;
 			Process p = r.exec(cmd);
 			System.out.println("RUNNER IS EXECUTING " + cmd);
 			(new Timeout(10, p)).start();
