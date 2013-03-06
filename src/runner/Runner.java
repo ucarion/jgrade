@@ -20,7 +20,7 @@ import dbconnection.DatabaseConnection;
  */
 public class Runner {
 	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
-	boolean timedOut;
+	
 	/**
 	 * Runs the passed program. For this program to work correctly, the program
 	 * must already be compiled.
@@ -35,7 +35,7 @@ public class Runner {
 	 */
 	public String run(String path, String input, String main) {
 		
-		timedOut = false;
+		boolean timedOut = false;
 		
 		Runtime r = Runtime.getRuntime();
 		String output = "";
@@ -54,6 +54,10 @@ public class Runner {
 				output += nextLine + "\n";
 				nextLine = br.readLine();
 			}
+			
+			if(timedOut)
+				updateDBTimeout(id);
+			//Will probably delete this file, move to turnin.
 			
 			System.out.println("Runner finished");
 			
