@@ -3,12 +3,8 @@ package runner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import config.Config;
-
-import dbconnection.DatabaseConnection;
 
 /**
  * The is the class that runs the file with command line and tells the user what
@@ -23,6 +19,7 @@ import dbconnection.DatabaseConnection;
 public class Runner {
 	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
 	boolean timedOut;
+	
 	/**
 	 * Runs the passed program. For this program to work correctly, the program
 	 * must already be compiled.
@@ -34,15 +31,13 @@ public class Runner {
 	 * @param main
 	 *            the name of the main class to execute.
 	 * @return the output of the program
-	 * @throws TimedOutException 
+	 * @throws TimedOutException
 	 */
 	public String run(String path, String input, String main) throws TimedOutException {
-		
 		timedOut = false;
 		
 		String[] args = new String[10];
 		args[0] = input;
-		
 		
 		Runtime r = Runtime.getRuntime();
 		String output = "";
@@ -62,7 +57,7 @@ public class Runner {
 				nextLine = br.readLine();
 			}
 			
-			if(timedOut)
+			if (timedOut)
 				throw new TimedOutException();
 			
 			System.out.println("Runner finished");
@@ -74,28 +69,29 @@ public class Runner {
 		return output;
 	}
 	
-	private class Timeout extends Thread{
-		
+	private class Timeout extends Thread {
 		int seconds;
 		Process p;
 		
-		public Timeout(int secs, Process p){
+		public Timeout(int secs, Process p) {
 			seconds = secs;
 			this.p = p;
 		}
 		
 		@Override
-		public void run(){
+		public void run() {
 			try {
 				Thread.sleep(seconds * 1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			} finally {
+			}
+			finally {
 				try {
 					p.exitValue();
-				} catch(IllegalThreadStateException ex) {
+				} catch (IllegalThreadStateException ex) {
 					timedOut = true;
-				} finally {
+				}
+				finally {
 					p.destroy();
 				}
 			}
