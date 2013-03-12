@@ -9,76 +9,111 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 
-import plagiarism.PlagiarismUtil.PlagiarismStat;
 import dbconnection.DatabaseConnection;
 
 public class PlagiarismChecker {
 	private static final String PATH_TO_TURNINS =
 			"C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
+	private static final double SUSPICION_INDEX = 0.7;
 	
 	public static void main(String[] args) {
-		evalPlagiarism(Integer.parseInt(args[0]));
-	}
-	
-	private static void evalPlagiarism(int assignmentid) {
-		PreparedStatement ps;
 		try {
-			ps =
-					DatabaseConnection.getConnection().prepareStatement(
-							"SELECT turninid, path, main_class, status FROM turnins WHERE turnins.assignmentid = "
-									+ assignmentid);
-			ResultSet rs = ps.executeQuery();
-			
-			String[] strs = new String[getSize(rs)];
-			int count = 0;
-			while (rs.next()) {
-//				System.out.println(PATH_TO_TURNINS + rs.getString(2) + File.separator
-//						+ rs.getString(3) + ".java");
-				strs[count] =
-						readFile(PATH_TO_TURNINS + rs.getString(2) + File.separator
-								+ rs.getString(3) + ".java");
-//				System.out.println(strs[count]);
-				count++;
-			}
-			rs.beforeFirst();
-			
-			strs = Arrays.copyOf(strs, count);
-			
-			count = 0;
-			while (rs.next()) {
-				evalPlagiarism(rs.getInt(1), strs, count);
-				count++;
-			}
-		} catch (SQLException e) {
+			plagiaCheck(Integer.parseInt(args[0]));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static void evalPlagiarism(int id, String[] strs, int index) {
-		PlagiarismStat ps = PlagiarismUtil.findPlagiarism(index, strs);
-		updatePlagiarism(id, asPercent(ps.getMax()) + "%");
-		System.out.println("TURNIN #" + id + ":\nMATCHED W/ " + ps.getString() + "\n"
-				+ asPercent(ps.getMax()) + "% PLAGIARISED.");
-	}
-	
-	private static void updatePlagiarism(int id, String s) {
-		try {
-			System.out.println("Setting " + id + "'s plagia to " + s);
-			PreparedStatement ps =
-					DatabaseConnection.getConnection().prepareStatement(
-							"UPDATE turnins SET plagiarism = '" + s
-									+ "' WHERE turninid = " + id);
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+	private static void plagiaCheck(int assignment) throws SQLException {
+		String sql =
+				"SELECT turninid, path, main_class, status "
+						+ "FROM turnins WHERE turnins.assignmentid = " + assignment;
+		PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql);
+		ResultSet rs = ps.executeQuery();
+		String[] strs = getProgramsAsStrings(rs);
+		int count = 0;
+		while (rs.next()) {
+			checkForPlagiarism(strs, count, rs);
+			count++;
 		}
 	}
 	
-	private static String asPercent(double d) {
-		DecimalFormat df = new DecimalFormat("##.###");
-		return df.format(d * 100);
+	private static void checkForPlagiarism(String[] strs, int index, ResultSet rs)
+			throws SQLException {
+		ArrayList<Integer> copiers = new ArrayList<Integer>();
+		double max = -1;
+		
+		for (int i = 0; i < strs.length; i++) {
+			if (i == index)
+				continue;
+			
+			double plagia = PlagiarismUtil.getPlagiarism(strs[index], strs[i]);
+			
+			if (plagia > SUSPICION_INDEX) {
+				rs.relative(i - index);
+				copiers.add(rs.getInt(1));
+				rs.relative(index - i);
+			}
+			
+			if (plagia > max)
+				max = plagia;
+		}
+		
+		updateSuspicion(rs.getInt(1), copiers);
+		updatePlagiarism(rs.getInt(1), max);
+	}
+	
+	private static void updateSuspicion(int id, ArrayList<Integer> others)
+			throws SQLException {
+		String s = "";
+		for (int other : others)
+			s += getAuthor(other) + "\n";
+		
+		String sql =
+				"UPDATE `turnins` SET `plag_from` = '" + s + "' WHERE turninid = " + id;
+		DatabaseConnection.getConnection().prepareStatement(sql).executeUpdate();
+	}
+	
+	private static void updatePlagiarism(int id, double plagia) throws SQLException {
+		String result = new DecimalFormat("##.###").format(plagia * 100) + "%";
+		String sql =
+				"UPDATE turnins SET plagiarism = '" + result + "' WHERE turninid = " + id;
+		System.out.println(sql);
+		DatabaseConnection.getConnection().prepareStatement(sql).executeUpdate();
+	}
+	
+	private static String getAuthor(int turninId) throws SQLException {
+		String sql =
+				"SELECT `name` FROM `users` WHERE `userid`=("
+						+ "SELECT `studentid` FROM `turnins` WHERE `turninid`="
+						+ turninId + ")";
+		ResultSet rs =
+				DatabaseConnection.getConnection().prepareStatement(sql).executeQuery();
+		rs.next();
+		return rs.getString(1);
+	}
+	
+	private static String[] getProgramsAsStrings(ResultSet rs) throws SQLException {
+		String[] a = new String[getSize(rs)];
+		int count = 0;
+		
+		while (rs.next()) {
+			String path =
+					PATH_TO_TURNINS + rs.getString(2) + File.separator + rs.getString(3)
+							+ ".java";
+			System.out.println("Looking for file at: " + path);
+			a[count] = readFile(path);
+			
+			if (a[count] == null)
+				System.out.println(path + " yielded null!");
+			
+			count++;
+		}
+		rs.beforeFirst();
+		
+		return a;
 	}
 	
 	private static String readFile(String path) {
@@ -86,27 +121,18 @@ public class PlagiarismChecker {
 			FileInputStream stream = new FileInputStream(new File(path));
 			FileChannel fc = stream.getChannel();
 			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-			/* Instead of using default, pass in a decoder. */
 			stream.close();
 			return Charset.defaultCharset().decode(bb).toString();
 		} catch (Exception e) {}
 		return null;
 	}
 	
-	private static int getSize(ResultSet rs) {
+	private static int getSize(ResultSet rs) throws SQLException {
 		int rowcount = 0;
-		try {
-			if (rs.last()) {
-				rowcount = rs.getRow();
-				rs.beforeFirst(); // not rs.first() because the rs.next() below
-									// will move on, missing the first element
-			}
-			return rowcount;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (rs.last()) {
+			rowcount = rs.getRow();
+			rs.beforeFirst();
 		}
-		
-		return -1;
+		return rowcount;
 	}
-	
 }
