@@ -37,13 +37,14 @@ public class Runner {
 		timedOut = false;
 		
 		String[] args = new String[10];
-		args[0] = input;
+		args[0] = "JavaInputs=" + input;
 		
 		Runtime r = Runtime.getRuntime();
 		String output = "";
 		System.out.println("Runner called.");
 		try {
-			String cmd = "java -cp " + BASEPATH + path + " " + main;
+			String cmd = "java -Xbootclasspath/p:Imports -cp " + BASEPATH + path + " " + main;
+			
 			Process p = r.exec(cmd, args);
 			System.out.println("RUNNER IS EXECUTING " + cmd);
 			(new Timeout(Config.getTimeout(), p)).start();
