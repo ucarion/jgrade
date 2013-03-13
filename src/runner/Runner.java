@@ -43,7 +43,7 @@ public class Runner {
 		String output = "";
 		System.out.println("Runner called.");
 		try {
-			String cmd = "java -Xbootclasspath/p:Imports -cp " + BASEPATH + path + " " + main;
+			String cmd = "java -Xbootclasspath/p:../Imports -cp " + BASEPATH + path + " " + main;
 			
 			Process p = r.exec(cmd, args);
 			System.out.println("RUNNER IS EXECUTING " + cmd);
