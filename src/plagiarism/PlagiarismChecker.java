@@ -43,7 +43,7 @@ public class PlagiarismChecker {
 	private static void checkForPlagiarism(String[] strs, int index, ResultSet rs)
 			throws SQLException {
 		ArrayList<Integer> copiers = new ArrayList<Integer>();
-		double max = -1;
+		double max = 0;
 		
 		for (int i = 0; i < strs.length; i++) {
 			if (i == index)
