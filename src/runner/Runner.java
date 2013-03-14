@@ -59,6 +59,18 @@ public class Runner {
 				nextLine = br.readLine();
 			}
 			
+			br.close();
+			br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			String error = "";
+			
+			nextLine = br.readLine();
+			while (nextLine != null) {
+				error += nextLine + "\n";
+				nextLine = br.readLine();
+			}
+			
+			if(!error.equals("")) output += "\n Errors: " + error;
+			
 			if (timedOut)
 				throw new TimedOutException();
 			

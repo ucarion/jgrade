@@ -20,7 +20,7 @@ public class JOptionPane {
 		showMessageDialog(parentComponent, message, title, messageType);
 	}
 	
-	public static String showInputDialog(Component parentComponent, Object message) {
+	public static String showInputDialog(Object message) {
 		if (counter >= inputs.length) {
 			System.out.println("[End of input]");
 			return null;
@@ -29,6 +29,10 @@ public class JOptionPane {
 		++counter;
 		System.out.println("[Inputting: " + out + "]");
 		return out;
+	}	
+	
+	public static String showInputDialog(Component parentComponent, Object message) {
+		return showInputDialog(message);
 	}
 	
 	public static String showInputDialog(Component parentComponent, Object message, Object initialSelectionValue) {
