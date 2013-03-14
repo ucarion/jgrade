@@ -1,10 +1,12 @@
 package config;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
-	private static final String PATH_TO_INI = "C:\\xampp\\htdocs\\test\\Grader\\java\\config.ini";
+	private static final String PATH_TO_INI = "java" + File.separator + "config.ini";
 	private static Properties config;
 	
 	static {
