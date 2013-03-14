@@ -20,7 +20,7 @@ import javax.tools.ToolProvider;
  * @author Ulysse & Sarah
  */
 public class Compiler {
-	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
+	private static final String BASEPATH = "turnins" + File.separator;
 	
 	static {
 		System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.7.0_11");

@@ -1,6 +1,7 @@
 package runner;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -17,7 +18,7 @@ import config.Config;
  * @version Description: run files and shows output
  */
 public class Runner {
-	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
+	private static final String BASEPATH = "turnins" + File.separator;
 	boolean timedOut;
 	
 	/**

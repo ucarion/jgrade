@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * 
  */
 public class Tester {
-	private static final String BASEPATH = "C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
+	private static final String BASEPATH = "turnins" + File.separator;
 	
 	/**
 	 * Tests to see if a program's source code passes the source rule.

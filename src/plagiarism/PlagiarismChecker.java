@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import dbconnection.DatabaseConnection;
 
 public class PlagiarismChecker {
-	private static final String PATH_TO_TURNINS =
-			"C:\\xampp\\htdocs\\test\\Grader\\turnins\\";
+	private static final String PATH_TO_TURNINS = "turnins" + File.separator;
 	private static final double SUSPICION_INDEX = 0.7;
 	
 	public static void main(String[] args) {
