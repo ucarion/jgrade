@@ -60,6 +60,8 @@ public class Runner {
 			}
 			
 			br.close();
+			
+			//Read errors
 			br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			String error = "";
 			
@@ -69,10 +71,11 @@ public class Runner {
 				nextLine = br.readLine();
 			}
 			
-			if(!error.equals("")) output += "\n Errors: " + error;
+			if(!error.equals("")) output += "\n Errors: \n" + error;
 			
+			//If it times out
 			if (timedOut)
-				throw new TimedOutException();
+				throw new TimedOutException(null,output);
 			
 			System.out.println("Runner finished");
 			
