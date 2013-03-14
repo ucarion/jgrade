@@ -37,7 +37,7 @@ public class TurninFinder {
 		} catch (Exception e) {
 			try {
 				// Create file
-				FileWriter fstream = new FileWriter("C:\\out.txt");
+				FileWriter fstream = new FileWriter("out.txt");
 				BufferedWriter out = new BufferedWriter(fstream);
 				StringWriter sw = new StringWriter();
 				PrintWriter pw = new PrintWriter(sw);

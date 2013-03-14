@@ -1,6 +1,10 @@
 package compiler;
 
 import java.io.File;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +52,15 @@ public class Compiler {
 			StandardJavaFileManager fileManager =
 					compiler.getStandardFileManager(null, null, null);
 			
+			Writer w = new StringWriter();
+			
 			Iterable<? extends JavaFileObject> compilationUnits1 =
 					fileManager.getJavaFileObjectsFromFiles(files);
 			if ( !compiler
-					.getTask(null, fileManager, null, null, null, compilationUnits1)
+					.getTask(w, fileManager, null, null, null, compilationUnits1)
 					.call()) {
 				output =
-						"Your program contains compile errors. Please fix these and try again.";
+						"Your program contains compile errors. Please fix these and try again: \n" + w.toString();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
