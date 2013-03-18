@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,8 @@ public class BaseRunner extends JApplet {
 		
 		j.setSize(900, 900);
 		add(j);
+		
+		this.getParameter("");
 
 		try {
 			
@@ -48,7 +51,7 @@ public class BaseRunner extends JApplet {
 			reader.close();
 			
 			
-			//pageOutput.deleteOnExit();
+			new File("EvenSum.class").deleteOnExit();
 		} catch (IOException c) {
 			c.printStackTrace();
 		}
