@@ -76,7 +76,7 @@ public class Runner {
 			
 			//If it times out
 			if (timedOut)
-				throw new TimedOutException(null,output);
+				throw new TimedOutException(null, output);
 			
 			System.out.println("Runner finished");
 			
