@@ -83,7 +83,7 @@ public class Tester {
 	 * actual rule, we use substring(4) to get everything after the fourth char.
 	 */
 	private static Pattern getSourceRule(String rule) {
-		return Pattern.compile(rule.split("\\n")[0].substring(4), Pattern.CASE_INSENSITIVE);
+		return Pattern.compile("(?i)" + rule.split("\\n")[0].substring(4));
 	}
 	
 	/*
@@ -97,7 +97,7 @@ public class Tester {
 		String[] a = rule.split("<\\w:>");
 		for (int i = 2; i < a.length; i += 2) {
 			if (a[i].equals(output))
-				return Pattern.compile(a[i + 1], Pattern.CASE_INSENSITIVE);
+				return Pattern.compile("(?i)" + a[i + 1]);
 		}
 		return null;
 	}
