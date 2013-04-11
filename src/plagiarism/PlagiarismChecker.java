@@ -67,8 +67,14 @@ public class PlagiarismChecker {
 	private static void updateSuspicion(int id, ArrayList<Integer> others)
 			throws SQLException {
 		String s = "";
-		for (int other : others)
-			s += getAuthor(other) + "\n";
+		
+		if ( !others.isEmpty()) {
+			s += getAuthor(others.get(0));
+			
+			for (int i = 1; i < others.size(); i++) {
+				s += ", " + getAuthor(others.get(i));
+			}
+		}
 		
 		String sql =
 				"UPDATE `turnins` SET `plag_from` = '" + s + "' WHERE turninid = " + id;
