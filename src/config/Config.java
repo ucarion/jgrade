@@ -1,19 +1,19 @@
 package config;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Properties;
+
+import org.ini4j.Wini;
 
 public class Config {
-	private static final String PATH_TO_INI = "java" + File.separator + "config.ini";
-	private static Properties config;
+	private static final String PATH_TO_INI = "config.ini";
+	private static Wini config;
 	
 	static {
-		config = new Properties();
 		try {
-			config.load(new FileInputStream(PATH_TO_INI));
-		} catch (Exception e) {}
+			config = new Wini(new File(PATH_TO_INI));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -23,7 +23,7 @@ public class Config {
 	 * @return the name of the host system.
 	 */
 	public static String getHost() {
-		return config.getProperty("host");
+		return config.get("sql", "host");
 	}
 	
 	/**
@@ -32,7 +32,7 @@ public class Config {
 	 * @return the password for the user returned by getUsername().
 	 */
 	public static String getPassword() {
-		return config.getProperty("password");
+		return config.get("sql", "password");
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class Config {
 	 * @return the port database connections are going through.
 	 */
 	public static String getPort() {
-		return config.getProperty("port");
+		return config.get("sql", "port");
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class Config {
 	 *         through.
 	 */
 	public static String getUsername() {
-		return config.getProperty("username");
+		return config.get("sql", "username");
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class Config {
 	 * @return the name the database to connect to.
 	 */
 	public static String getDatabase() {
-		return config.getProperty("database");
+		return config.get("sql", "database");
 	}
 	
 	/**
@@ -76,7 +76,6 @@ public class Config {
 	}
 
 	public static int getTimeout() {
-		// TODO Auto-generated method stub
 		return 10;
 	}
 }
