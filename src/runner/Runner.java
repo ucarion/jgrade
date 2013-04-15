@@ -45,9 +45,16 @@ public class Runner {
 		System.out.println("Runner called.");
 		try {
 			
-			String cmd = "java -Xbootclasspath/p:java\\Imports -cp " + BASEPATH + path + " " + main;
+			String runas = "";
+			
+			if(System.getProperty("OS.name").contains("Windows"));
+				runas = "echo. | runas /user:test@SHIP.local ";
+				
+			String cmd = runas + "java -Xbootclasspath/p:java\\Imports -cp myfolder;" + BASEPATH + path + " " + main;
 			
 			Process p = r.exec(cmd, args);
+			
+			
 			System.out.println("RUNNER IS EXECUTING " + cmd);
 			(new Timeout(Config.getTimeout(), p)).start();
 			BufferedReader br =

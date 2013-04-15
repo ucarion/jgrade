@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -5,80 +6,115 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.swing.JApplet;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 public class BaseRunner extends JApplet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2594949974470065461L;
 
-	JTextArea j;
+	JTextField j;
 
 	@Override
 	public void init() {
 
 		this.rootPane.setSize(900, 900);
+		this.setForeground(Color.BLUE);
 
-		j = new JTextArea();
+		j = new JTextField();
 		
 		j.setSize(900, 900);
 		add(j);
 		
 		this.getParameter("");
 
-		try {
-			
-			URL url = new URL("http://ocean/test/Grader/turnins/5113d173eb709/EvenSum.class");
-			url.openConnection();
-			InputStream reader = url.openStream();
+		j.setText("Downloading...\n");
+		AccessController.doPrivileged(new PrivilegedAction<Object>() {
+			public Object run() 
+			{
+				try {
+					
+					URL url = new URL("http://ocean/test/Grader/turnins/5113d173eb709/EvenSum.class");
+					url.openConnection();
+					InputStream reader = url.openStream();
 
-			FileOutputStream writer = new FileOutputStream("EvenSum.class");
-			byte[] buffer = new byte[153600];
-			int bytesRead = 0;
+					FileOutputStream writer = new FileOutputStream("EvenSum.class");
+					byte[] buffer = new byte[153600];
+					int bytesRead = 0;
 
-			while ((bytesRead = reader.read(buffer)) > 0) {  
-				writer.write(buffer, 0, bytesRead);
-				buffer = new byte[153600];
+					while ((bytesRead = reader.read(buffer)) > 0) {  
+						writer.write(buffer, 0, bytesRead);
+						buffer = new byte[153600];
+					}
+
+					writer.close();
+					reader.close();
+					
+					
+					new File("EvenSum.class").deleteOnExit();
+				} catch (Exception c) {
+					c.printStackTrace();
+				}
+				
+				return null;
 			}
 
-			writer.close();
-			reader.close();
-			
-			
-			new File("EvenSum.class").deleteOnExit();
-		} catch (IOException c) {
-			c.printStackTrace();
-		}
+			});
+		
 	}
 
 	@Override
 	public void start() {
 
 		try {
-			Process p = Runtime
-					.getRuntime()
-					.exec("java EvenSum");
+			j.setText(j.getText() + "\nRunning....");
+			/*Process p = AccessController.doPrivileged(new PrivilegedAction<Process>() {
+				public Process run() 
+				{
+					 try {
+						return Runtime.getRuntime().exec("java EvenSum");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						j.setText(e.getMessage());
+					}
+					return null;
+				}
+			});*/
 			
-			//ClassLoader.getSystemClassLoader().loadClass("EvenSum");
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					p.getErrorStream()));
+			//new StreamReader(p.getInputStream(), j);
+			
+			
+			j.setText(j.getText() + " Run: " + AccessController.doPrivileged(new PrivilegedAction<Object>() {
+				public Object run() 
+				{
+					try {
+						return ClassLoader.getSystemClassLoader().loadClass("EvenSum").getMethod("main",String[].class).invoke(this, (Object[])null);
+					} catch (Exception e){
+						j.setText(j.getText() + e.getMessage());
+					}
+					return null;
+					
+				}
+			}));
+			
+			/*BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
 			// loop through the lines of the output adding them to output
 			String nextLine = br.readLine();
 			while (nextLine != null) {
 				j.setText(j.getText() + " " + nextLine + "\n");
 				nextLine = br.readLine();
-			}
-		} catch (IOException e) {
+			}*/
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			j.setText(j.getText() + e.getMessage());
 		}
 
 	}
