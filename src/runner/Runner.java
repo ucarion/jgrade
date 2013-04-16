@@ -34,7 +34,7 @@ public class Runner {
 	 * @return the output of the program
 	 * @throws TimedOutException
 	 */
-	public String run(String path, String input, String main) throws TimedOutException {
+	public String run(String path, String input, String main, String lib_dir) throws TimedOutException {
 		timedOut = false;
 		
 		String[] args = new String[1];
@@ -47,10 +47,10 @@ public class Runner {
 			
 			String runas = "";
 			
-			if(System.getProperty("OS.name").contains("Windows"));
+			/*if(System.getProperty("OS.name").contains("Windows"));
 				runas = "echo. | runas /user:test@SHIP.local ";
-				
-			String cmd = runas + "java -Xbootclasspath/p:java\\Imports -cp myfolder;" + BASEPATH + path + " " + main;
+			 */
+			String cmd = runas + "java -Xbootclasspath/p:java\\Imports -cp " + lib_dir + ";" + BASEPATH + path + " " + main;
 			
 			Process p = r.exec(cmd, args);
 			

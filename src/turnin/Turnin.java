@@ -85,11 +85,14 @@ public class Turnin {
 		String output = "";
 		String testResults = dbGet(id, "tests");
 		String main = dbGet(id, "main_class");
+		int assId = Integer.parseInt(dbGet(id, "assignmentid"));
+		String lib_dir = "assignment_libs/" + assId;
+		//String assMain = dbAssignmentGet(assId, "main_class");
 		boolean noRunErrors = true;
 		for (String input : inputs) {
 			String runResult;
 			try {
-				runResult = (new Runner()).run(path, input, main);
+				runResult = (new Runner()).run(path, input, main, lib_dir);
 				
 				output += "<Input \"" + input + "\" yields output:>\n" + runResult + "\n";
 				boolean testworked = Tester.testOutput(input, runResult, rule);
@@ -125,6 +128,21 @@ public class Turnin {
 	private static String dbGet(int id, String column) {
 		try {
 			String sql = "SELECT " + column + " FROM turnins WHERE turninid = " + id;
+			System.out.println("Query is: " + sql);
+			PreparedStatement ps =
+					DatabaseConnection.getConnection().prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			return rs.getString(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Danger, Will Robinson";
+		}
+	}
+	
+	private static String dbAssignmentGet(int id, String column) {
+		try {
+			String sql = "SELECT " + column + " FROM assignments WHERE assignmentid = " + id;
 			System.out.println("Query is: " + sql);
 			PreparedStatement ps =
 					DatabaseConnection.getConnection().prepareStatement(sql);
