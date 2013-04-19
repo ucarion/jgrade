@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,16 +58,24 @@ public class BaseRunner extends JApplet {
 					writer.close();
 					reader.close();
 					
-					
-					new File("EvenSum.class").deleteOnExit();
+					FileInputStream f = new FileInputStream("EvenSum.class");
+					String t = "";
+					while(f.available() > 0)
+						t = t + (char)f.read();
+					j.setText(j.getText() + t);
+					//new File("EvenSum.class").deleteOnExit();
 				} catch (Exception c) {
-					c.printStackTrace();
+					j.setText(j.getText() + c.getMessage());
 				}
 				
 				return null;
 			}
 
 			});
+		
+		ClassLoader.getSystemClassLoader().
+		
+		
 		
 	}
 
