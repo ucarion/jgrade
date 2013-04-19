@@ -8,7 +8,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -28,7 +31,7 @@ public class BaseRunner extends JApplet {
 
 		this.rootPane.setSize(900, 900);
 		this.setForeground(Color.BLUE);
-
+		
 		j = new JTextField();
 		
 		j.setSize(900, 900);
@@ -36,7 +39,13 @@ public class BaseRunner extends JApplet {
 		
 		this.getParameter("");
 
-		j.setText("Downloading...\n");
+		log("Downloading...\n");
+		
+		
+		
+		
+		
+		/*
 		AccessController.doPrivileged(new PrivilegedAction<Object>() {
 			public Object run() 
 			{
@@ -71,9 +80,7 @@ public class BaseRunner extends JApplet {
 				return null;
 			}
 
-			});
-		
-		ClassLoader.getSystemClassLoader().
+			});*/
 		
 		
 		
@@ -82,6 +89,7 @@ public class BaseRunner extends JApplet {
 	@Override
 	public void start() {
 
+		/*
 		try {
 			j.setText(j.getText() + "\nRunning....");
 			/*Process p = AccessController.doPrivileged(new PrivilegedAction<Process>() {
@@ -100,7 +108,7 @@ public class BaseRunner extends JApplet {
 			//new StreamReader(p.getInputStream(), j);
 			
 			
-			j.setText(j.getText() + " Run: " + AccessController.doPrivileged(new PrivilegedAction<Object>() {
+			/*j.setText(j.getText() + " Run: " + AccessController.doPrivileged(new PrivilegedAction<Object>() {
 				public Object run() 
 				{
 					try {
@@ -120,12 +128,50 @@ public class BaseRunner extends JApplet {
 			while (nextLine != null) {
 				j.setText(j.getText() + " " + nextLine + "\n");
 				nextLine = br.readLine();
-			}*/
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			j.setText(j.getText() + e.getMessage());
+			log(e.getMessage());
+		}*/
+		
+		
+		try {
+			final URL[] urls = {new URL("http://ocean/test/Grader/turnins/5113d173eb709/")};
+			
+			final URLClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
+				public URLClassLoader run() {
+					return new URLClassLoader(urls);
+				}
+			});
+			Class<?> c = cl.loadClass("EvenSum");
+			for(Method m : c.getMethods()){
+				m.invoke(this, (Object[])null);
+			}
+			
+			cl.close();
+			
+		} catch(MalformedURLException e){
+			log(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			log(e.getMessage());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
+	}
+	
+	private void log(String s){
+		j.setText(j.getText() + " " + s);
 	}
 	
 	private class StreamReader extends Thread{
