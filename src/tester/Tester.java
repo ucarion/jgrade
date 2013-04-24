@@ -97,7 +97,7 @@ public class Tester {
 		String[] a = rule.split("<\\w:>");
 		for (int i = 2; i < a.length; i += 2) {
 			if (a[i].equals(output))
-				return Pattern.compile("(?i)" + a[i + 1], Pattern.DOTALL);
+				return Pattern.compile("(?is)" + a[i + 1], Pattern.DOTALL);
 		}
 		return null;
 	}
