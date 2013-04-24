@@ -24,7 +24,8 @@ public class TurninFinder {
 		try {
 			PreparedStatement ps =
 					DatabaseConnection.getConnection().prepareStatement(
-							"SELECT turninid FROM turnins WHERE status = \"waiting\"");
+							"SELECT turninid FROM turnins WHERE status = \"waiting\""
+									+ " AND assignmentid = " + args[0]);
 			ResultSet rs = ps.executeQuery();
 			
 			while (rs.next()) {
