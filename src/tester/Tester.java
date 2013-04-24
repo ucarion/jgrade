@@ -83,7 +83,7 @@ public class Tester {
 	 * actual rule, we use substring(4) to get everything after the fourth char.
 	 */
 	private static Pattern getSourceRule(String rule) {
-		return Pattern.compile("(?i)" + rule.split("\\n")[0].substring(4));
+		return Pattern.compile("(?is)" + rule.split("\\n")[0].substring(4));
 	}
 	
 	/*
