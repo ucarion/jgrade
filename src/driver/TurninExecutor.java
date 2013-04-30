@@ -15,6 +15,7 @@ import dbconnection.DatabaseConnection;
  */
 public class TurninExecutor extends Thread {
 	private int turnin_id;
+	private int assignment_id;
 
 	/**
 	 * Create a new TurninExecutor.
@@ -22,8 +23,9 @@ public class TurninExecutor extends Thread {
 	 * @param turnin_id
 	 *            the id of the turnin in the database
 	 */
-	public TurninExecutor(int turnin_id) {
+	public TurninExecutor(int turnin_id, int assignment_id) {
 		this.turnin_id = turnin_id;
+		this.assignment_id = assignment_id;
 		System.out.println("New TurninExec made w/ id=" + turnin_id);
 	}
 
@@ -33,7 +35,7 @@ public class TurninExecutor extends Thread {
 	 * @return
 	 */
 	public void start() {
-		Turnin t = new Turnin(turnin_id);
+		Turnin t = new Turnin(turnin_id, assignment_id);
 		String s = getCompilableInfo();
 
 		if (s.equals("nothing"))

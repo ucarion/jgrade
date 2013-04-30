@@ -31,7 +31,7 @@ public class TurninFinder {
 			while (rs.next()) {
 				System.out.println("Found a new turnin! It's id is " + rs.getString(1));
 				System.out.println("Started turnin id #" + rs.getInt(1));
-				new TurninExecutor(rs.getInt(1)).start();
+				new TurninExecutor(rs.getInt(1), Integer.parseInt(args[0])).start();
 				
 				System.out.println("--------");
 			}

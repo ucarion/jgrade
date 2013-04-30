@@ -29,6 +29,7 @@ import dbconnection.DatabaseConnection;
 public class Turnin {
 	private int id;
 	private String path;
+	private int assignment;
 	
 	/**
 	 * Create a new Turnin. Note that this does not really create a new turnin--
@@ -38,9 +39,10 @@ public class Turnin {
 	 * @param id
 	 *            the id of the turnin in the database
 	 */
-	public Turnin(int id) {
+	public Turnin(int id, int assignment) {
 		this.id = id;
 		path = dbGet(id, "path");
+		this.assignment = assignment;
 	}
 	
 	/**
@@ -69,7 +71,7 @@ public class Turnin {
 	public void testSource() {
 		// System.out.println("Source test called!");
 		String rule = getRule(id);
-		String file = path + "/" + dbGet(id, "main_class") + ".java";
+		String file = path + "/" + dbAssignmentGet(assignment, "source_file") + ".java";
 		dbSet(id, "tests", "<Source code passes test?>" + Tester.testSource(file, rule)
 				+ "\n");
 	}

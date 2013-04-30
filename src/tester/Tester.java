@@ -44,6 +44,8 @@ public class Tester {
 	 */
 	public static boolean testSource(String path, String rule) {
 		String source = readFile(path);
+		if (source == null)
+			throw new RuntimeException(path);
 		return getSourceRule(rule).matcher(source).find();
 	}
 	
