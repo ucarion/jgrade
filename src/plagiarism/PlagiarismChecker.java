@@ -27,7 +27,7 @@ public class PlagiarismChecker {
 	
 	private static void plagiaCheck(int assignment) throws SQLException {
 		String sql =
-				"SELECT turninid, path, status "
+				"SELECT turninid, path, status, main_class "
 						+ "FROM turnins WHERE turnins.assignmentid = " + assignment;
 		PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
@@ -110,16 +110,19 @@ public class PlagiarismChecker {
 		return rs.getString(1);
 	}
 	
-	private static String[] getProgramsAsStrings(ResultSet rs, int assignmentId) throws SQLException {
+	private static String[] getProgramsAsStrings(ResultSet rs, int assignmentId)
+			throws SQLException {
 		String[] a = new String[getSize(rs)];
 		int count = 0;
 		
-		String plag_file = getPlagFile(assignmentId);
+		String plagFile = getPlagFile(assignmentId);
+		
+		boolean useMainClass = plagFile.isEmpty();
 		
 		while (rs.next()) {
 			String path =
-					PATH_TO_TURNINS + rs.getString(2) + File.separator + plag_file
-							+ ".java";
+					PATH_TO_TURNINS + rs.getString(2) + File.separator
+							+ (useMainClass ? rs.getString(4) : plagFile) + ".java";
 			System.out.println("Looking for file at: " + path);
 			a[count] = readFile(path);
 			

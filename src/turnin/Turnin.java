@@ -71,9 +71,17 @@ public class Turnin {
 	public void testSource() {
 		// System.out.println("Source test called!");
 		String rule = getRule(id);
-		String file = path + "/" + dbAssignmentGet(assignment, "source_file") + ".java";
+		String sourceFile = getSourceFile();
+		String file = path + "/" + sourceFile + ".java";
 		dbSet(id, "tests", "<Source code passes test?>" + Tester.testSource(file, rule)
 				+ "\n");
+	}
+	
+	private String getSourceFile() {
+		String file = dbAssignmentGet(assignment, "source_file");
+		if (file.isEmpty())
+			file = dbGet(id, "main_class");
+		return file;
 	}
 	
 	/**
@@ -89,7 +97,7 @@ public class Turnin {
 		String main = dbGet(id, "main_class");
 		int assId = Integer.parseInt(dbGet(id, "assignmentid"));
 		String lib_dir = "assignment_libs/" + assId;
-		//String assMain = dbAssignmentGet(assId, "main_class");
+		// String assMain = dbAssignmentGet(assId, "main_class");
 		boolean noRunErrors = true;
 		for (String input : inputs) {
 			String runResult;
@@ -144,7 +152,8 @@ public class Turnin {
 	
 	private static String dbAssignmentGet(int id, String column) {
 		try {
-			String sql = "SELECT " + column + " FROM assignments WHERE assignmentid = " + id;
+			String sql =
+					"SELECT " + column + " FROM assignments WHERE assignmentid = " + id;
 			System.out.println("Query is: " + sql);
 			PreparedStatement ps =
 					DatabaseConnection.getConnection().prepareStatement(sql);
