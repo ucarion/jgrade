@@ -1,6 +1,9 @@
 package compiler;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -61,6 +64,23 @@ public class Compiler {
 					.call()) {
 				output =
 						"Your program contains compile errors. Please fix these and try again: \n" + w.toString();
+			} else {
+				System.out.println("Generating jds...");
+				new File(File.separator + BASEPATH + path + File.separator + "doc").mkdirs();
+				String jdCom = "javadoc -d doc -exclude doc *";
+				System.out.println(jdCom);
+				Process tmp = Runtime.getRuntime().exec(jdCom, null, new File(BASEPATH + path + File.separator));
+				
+				BufferedReader br = new BufferedReader(new InputStreamReader(tmp.getErrorStream()));
+				
+				String nextLine = br.readLine();
+				while (nextLine != null) {
+					System.out.println(nextLine);
+					nextLine = br.readLine();
+				}
+				
+				br.close();
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
