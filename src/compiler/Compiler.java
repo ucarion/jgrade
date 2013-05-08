@@ -2,10 +2,7 @@ package compiler;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -73,11 +70,9 @@ public class Compiler {
 				
 				BufferedReader br = new BufferedReader(new InputStreamReader(tmp.getErrorStream()));
 				
-				String nextLine = br.readLine();
-				while (nextLine != null) {
+				String nextLine;
+				while ((nextLine = br.readLine()) != null)
 					System.out.println(nextLine);
-					nextLine = br.readLine();
-				}
 				
 				br.close();
 				

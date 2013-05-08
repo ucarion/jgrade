@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-
 import config.Config;
 
 /**
@@ -38,10 +36,6 @@ public class Runner {
 	public String run(String path, String input, String main, String lib_dir) throws TimedOutException {
 		timedOut = false;
 		
-		String[] args = new String[1];
-		args[0] = "JavaInputs=" + input;
-		
-		Runtime r = Runtime.getRuntime();
 		String output = "";
 		System.out.println("Runner called.");
 		try {
