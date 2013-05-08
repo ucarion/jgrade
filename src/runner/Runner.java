@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 
 import config.Config;
 
@@ -11,7 +12,7 @@ import config.Config;
  * The is the class that runs the file with command line and tells the user what
  * the output is
  * 
- * @author Sarah Herrman & Bob & Ulysse Carion
+ * @author Sarah Herrman & Ulysse Carion & Francesco Macagno
  * @version Filename: Runner.java
  * @version Date: 10/18/12
  * @version Program: Java thingie#2
@@ -45,11 +46,21 @@ public class Runner {
 		System.out.println("Runner called.");
 		try {
 			
+			/*ClassLoader cl = ClassLoader.getSystemClassLoader();
+			Object[] o = new Object[1];
+			o[0] = new String[0];
+			cl.loadClass("").getMethod("main", String[].class).invoke(null, o);
+			
+			SecurityManager sm;*/
+			
 			String cmd = "java -Xbootclasspath/p:java\\Imports -cp " + lib_dir + ";" + BASEPATH + path + " " + main;
-			
-			Process p = r.exec(cmd, args);
-			
 			System.out.println("RUNNER IS EXECUTING " + cmd);
+			ProcessBuilder pb = new ProcessBuilder(cmd.split(" "));
+			pb.redirectErrorStream(true);
+			pb.environment().put("JavaInputs", input);
+			
+			Process p = pb.start();
+			
 			(new Timeout(Config.getTimeout(), p)).start();
 			BufferedReader br =
 					new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -63,18 +74,6 @@ public class Runner {
 			
 			br.close();
 			
-			//Read errors
-			br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-			String error = "";
-			
-			nextLine = br.readLine();
-			while (nextLine != null) {
-				error += nextLine + "\n";
-				nextLine = br.readLine();
-			}
-			
-			if(!error.equals("")) output += "\n Errors: \n" + error;
-			
 			//If it times out
 			if (timedOut)
 				throw new TimedOutException(null, output);
@@ -84,6 +83,12 @@ public class Runner {
 		} catch (IOException e) {
 			e.printStackTrace();
 			output = e.getMessage();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return output;
 	}
