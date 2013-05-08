@@ -62,15 +62,12 @@ public class Runner {
 			Process p = pb.start();
 			
 			(new Timeout(Config.getTimeout(), p)).start();
-			BufferedReader br =
-					new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			
 			// loop through the lines of the output adding them to output
-			String nextLine = br.readLine();
-			while (nextLine != null) {
+			String nextLine;
+			while((nextLine = br.readLine()) != null)
 				output += nextLine + "\n";
-				nextLine = br.readLine();
-			}
 			
 			br.close();
 			
