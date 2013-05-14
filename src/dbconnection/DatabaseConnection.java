@@ -15,6 +15,11 @@ public class DatabaseConnection {
 		con = getDBConnection();
 	}
 	
+	/**
+	 * Gets the database connection for the Java side.
+	 * 
+	 * @return a JDBC Connection to the database.
+	 */
 	public static Connection getConnection() {
 		return con;
 	}
