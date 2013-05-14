@@ -15,8 +15,16 @@ import dbconnection.DatabaseConnection;
 
 public class PlagiarismChecker {
 	private static final String PATH_TO_TURNINS = "turnins" + File.separator;
+	/** The minimum value for which we conclude cheating is going on. */
 	private static final double SUSPICION_INDEX = 0.7;
 	
+	/**
+	 * Checks for plagiarism in the passed assignment.
+	 * 
+	 * @param args
+	 *            args[0] contains the id of the assignment to plagiarism-check
+	 *            for.
+	 */
 	public static void main(String[] args) {
 		try {
 			plagiaCheck(Integer.parseInt(args[0]));
