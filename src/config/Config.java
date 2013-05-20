@@ -74,7 +74,13 @@ public class Config {
 	public static String getFullDatabaseName() {
 		return "jdbc:mysql://" + getHost() + ":" + getPort() + "/" + getDatabase();
 	}
-
+	
+	/**
+	 * Get the amount of time to wait before concluding a turnin has timed out.
+	 * Returns a value in seconds.
+	 * 
+	 * @return the number of seconds for a turnin should time out.
+	 */
 	public static int getTimeout() {
 		return 10;
 	}

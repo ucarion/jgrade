@@ -1,6 +1,16 @@
 package plagiarism;
 
 public class PlagiarismUtil {
+	/**
+	 * Gets the plagiarism score (from 0 to 1) between two strings.
+	 * 
+	 * @param a
+	 *            the first string
+	 * @param b
+	 *            the second string
+	 * @return a plagiarism score, going from 0 (not plagiarized) to 1
+	 *         (completely plagiarized).
+	 */
 	public static double getPlagiarism(String a, String b) {
 		return 1 - getLevenshteinDistance(a, b)
 				/ (double) Math.max(a.length(), b.length());

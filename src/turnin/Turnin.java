@@ -1,5 +1,6 @@
 package turnin;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -72,7 +73,7 @@ public class Turnin {
 		// System.out.println("Source test called!");
 		String rule = getRule(id);
 		String sourceFile = getSourceFile();
-		String file = path + "/" + sourceFile + ".java";
+		String file = path + File.separator + sourceFile + ".java";
 		dbSet(id, "tests", "<Source code passes test?>" + Tester.testSource(file, rule)
 				+ "\n");
 	}
