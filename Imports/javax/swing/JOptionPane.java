@@ -5,7 +5,14 @@ import java.awt.Component;
 
 public class JOptionPane {
 	private static int counter = 0;
-	private static String[] inputs = System.getenv("JavaInputs").split(" ");
+	private static String[] inputs;
+	
+	static {
+		String s = System.getenv("JavaInputs");
+//		System.out.println("Insert environment variable here: " + s);
+		inputs = s.split(" ");
+//		System.out.println("There are these many words: " + inputs.length);
+	}
 	
 	public static void showMessageDialog(Component parentComponent, Object message) {
 		System.out.println(message);

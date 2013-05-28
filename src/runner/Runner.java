@@ -40,18 +40,13 @@ public class Runner {
 		System.out.println("Runner called.");
 		try {
 			
-			/*ClassLoader cl = ClassLoader.getSystemClassLoader();
-			Object[] o = new Object[1];
-			o[0] = new String[0];
-			cl.loadClass("").getMethod("main", String[].class).invoke(null, o);
-			
-			SecurityManager sm;*/
-			
-			String cmd = "java -Xbootclasspath/p:java\\Imports -cp " + lib_dir + ";" + BASEPATH + path + " " + main;
+			String cmd = "simplerunas.exe test password java -Xbootclasspath/p:java\\Imports -cp " + lib_dir + ";" + BASEPATH + path + " " + main + " " + input;
+			//String cmd = "java -Xbootclasspath/p:java\\Imports -cp " + lib_dir + ";" + BASEPATH + path + " " + main;
 			System.out.println("RUNNER IS EXECUTING " + cmd);
 			ProcessBuilder pb = new ProcessBuilder(cmd.split(" "));
 			pb.redirectErrorStream(true);
 			pb.environment().put("JavaInputs", input);
+			
 			
 			Process p = pb.start();
 			
