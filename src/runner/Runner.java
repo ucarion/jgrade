@@ -40,7 +40,7 @@ public class Runner {
 		System.out.println("Runner called.");
 		try {
 			
-			String cmd = "simplerunas.exe test password java -Xbootclasspath/p:java\\Imports -cp " + lib_dir + ";" + BASEPATH + path + " " + main + " " + input;
+			String cmd = "simplerunas.exe test password turnins java -Xbootclasspath/p:..\\java\\Imports -cp ..\\" + lib_dir + ";" + path + " " + main + " " + input;
 			//String cmd = "java -Xbootclasspath/p:java\\Imports -cp " + lib_dir + ";" + BASEPATH + path + " " + main;
 			System.out.println("RUNNER IS EXECUTING " + cmd);
 			ProcessBuilder pb = new ProcessBuilder(cmd.split(" "));
