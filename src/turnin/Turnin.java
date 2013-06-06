@@ -97,7 +97,7 @@ public class Turnin {
 		String testResults = dbGet(id, "tests");
 		String main = dbGet(id, "main_class");
 		int assId = Integer.parseInt(dbGet(id, "assignmentid"));
-		String lib_dir = "assignment_libs/" + assId;
+		String lib_dir = "assignment_libs\\" + assId;
 		// String assMain = dbAssignmentGet(assId, "main_class");
 		boolean noRunErrors = true;
 		for (String input : inputs) {

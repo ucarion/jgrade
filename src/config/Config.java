@@ -84,4 +84,22 @@ public class Config {
 	public static int getTimeout() {
 		return 10;
 	}
+	
+	/**
+	 * Gets the user with which to test turnins.
+	 * 
+	 * @return The username
+	 */
+	public static String getTestUser() {
+		return config.get("GEN","testuser");
+	}
+	
+	/**
+	 * Gets the password for the test user defined in config.yml
+	 * 
+	 * @return the password
+	 */
+	public static String getTestPassword() {
+		return config.get("GEN","testpassword");
+	}
 }
